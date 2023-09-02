@@ -4,6 +4,7 @@ import copy from "../assets/copy.svg";
 import linkIcon from "../assets/link.svg";
 import loader from "../assets/loader.svg";
 import tick from "../assets/tick.svg";
+import deleteIcon from "../assets/delete.svg";
 
 import { useLazyGetSummaryQuery } from "../services/article";
 
@@ -50,6 +51,21 @@ const Demo = () => {
     setTimeout(() => setCopied(""), 3000);
   };
 
+  const handleDelete = (copyUrl: string) => {
+    const updatedAllArticles = allArticles.filter(
+      (item) => item.url !== copyUrl
+    );
+    setAllArticles(updatedAllArticles);
+    localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
+
+    if (article.url === copyUrl) {
+      setArticle({
+        url: "",
+        summary: "",
+      });
+    }
+  };
+
   return (
     <section className="mt-16 w-full max-w-xl">
       {/* Search */}
@@ -85,22 +101,34 @@ const Demo = () => {
 
         {/* Browse URL History */}
         <div>
-          {allArticles.map((item, index) => (
-            <div
-              key={`link-${index}`}
-              onClick={() => setArticle(item)}
-              className="link_card"
-            >
-              <div className="copy_btn" onClick={() => handleCopy(item.url)}>
+          {allArticles.slice(0, 5).map((item, index) => (
+            <div key={`link-${index}`} className="link_card">
+              <div
+                className="copy_btn hover:bg-gray-200"
+                onClick={() => handleCopy(item.url)}
+              >
                 <img
                   src={copied === item.url ? tick : copy}
                   alt="copy_icon"
                   className="w-[40%] h-[40%] object-contain"
                 />
               </div>
-              <p className="flex-1 font-satoshi text-blue-700 font-medium text-sm truncate">
+              <p
+                onClick={() => setArticle(item)}
+                className="flex-1 font-satoshi text-blue-700 font-medium text-sm truncate"
+              >
                 {item.url}
               </p>
+              <div
+                className="delete_btn hover:bg-red-300"
+                onClick={() => handleDelete(item.url)}
+              >
+                <img
+                  src={deleteIcon}
+                  alt="delete_icon"
+                  className="w-[40%] h-[40%] object-contain"
+                />
+              </div>
             </div>
           ))}
         </div>

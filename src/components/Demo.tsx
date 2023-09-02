@@ -113,8 +113,14 @@ const Demo = () => {
           <p className="font-inter font-bold text-black text-center">
             Well, that wasn't supposed to happen...
             <br />
-            <span className="font-satoshi font-nornal text-gray-700">
-              {JSON.stringify(error)}
+            <br />
+            <span className="font-satoshi font-nornal text-gray-500">
+              {error && "data" in error
+                ? (error?.data as { error: string })?.error.replace(
+                    "An error occurred: ",
+                    ""
+                  )
+                : "Please try again in some time"}
             </span>
           </p>
         ) : (
